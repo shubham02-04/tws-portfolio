@@ -13,13 +13,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Verify Files
+      - name: Install AzCopy
         run: |
-          pwd
-          ls -la
+          wget https://aka.ms/downloadazcopy-v10-linux -O azcopy.tar.gz
+          tar -xvf azcopy.tar.gz
+          sudo cp ./azcopy_linux_amd64_*/azcopy /usr/local/bin/
 
-      - name: Upload Website to Azure Storage
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
-            az storage blob upload-batch --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT }}" --destination '$web' --source . --sas-token "${{ secrets.AZURE_STORAGE_SAS }}" --overwrite
+      - name: Upload Website Files
+        run: |
+          azcopy sync "." "${{ secrets.AZURE_WEB_CONTAINER_URL }}?${{ secrets.AZURE_WEB_CONTAINER_SAS }}" --recursive=true
