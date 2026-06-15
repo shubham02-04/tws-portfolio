@@ -13,12 +13,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Verify Files
+        run: |
+          pwd
+          ls -la
+
       - name: Upload Website to Azure Storage
         uses: azure/CLI@v2
         with:
           inlineScript: |
-            az storage blob upload-batch \
-              --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
-              --destination '$web' \
-              --source . \
-              --overwrite
+            az storage blob upload-batch --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT }}" --destination '$web' --source . --sas-token "${{ secrets.AZURE_STORAGE_SAS }}" --overwrite
