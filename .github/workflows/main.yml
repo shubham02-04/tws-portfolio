@@ -20,4 +20,5 @@ jobs:
 
       - name: Upload Website
         run: |
-          azcopy copy "./tws-portfolio/*" "https://githubproject.blob.core.windows.net/$web?..." --recursive=true
+        cd tws-portfolio
+        azcopy copy "." "https://githubproject.blob.core.windows.net/\$web?${{ secrets.AZURE_WEB_CONTAINER_SAS }}" --recursive=true
